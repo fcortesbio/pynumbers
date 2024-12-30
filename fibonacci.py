@@ -1,11 +1,11 @@
 from measure import timer # decorator for measuring execution times
-from math import sqrt
-from functools import lru_cache # used memoization to improve fibo_rects performance
-
+from math import sqrt 
+from functools import lru_cache # ~Least Recently Used cache~. Used to improve fibo_rects performance
+from decimal import Decimal as dec, getcontext
 
 invalid_input_msg = "Input must be a non-negative integer"
 
-# @lru_cache(maxsize=None)
+@lru_cache(maxsize=None) # 
 def fibo_recs(n: int) -> int:
     """
     Returns the 'n' number of the Fibonacci series using recursion. 
@@ -26,7 +26,7 @@ def fibo_iter(n : int) -> int:
     for _ in range(n):
         a, b = b, a + b 
     return a
-
+    
 def fibo_math(n: int) -> int:
     """
     Returns the 'n' number in the Fibonacci sereis using Binnet's formula.
@@ -35,14 +35,20 @@ def fibo_math(n: int) -> int:
     if not isinstance(n, int) or n < 0:
         raise ValueError(invalid_input_msg)
     
+    getcontext().prec = 50 # Set precision of 50 significant numbers
+
     if n in (0, 1):
         return n
     
-    c, phi, psi = 1 / sqrt(5), (1 + sqrt(5))/2, (1 - sqrt(5))/2
-    return round(c * (phi ** n) - (psi ** n))
-   
+    c = dec(1) / dec(sqrt(5)) #                c = 1 ÷ √5
+    phi = (dec(1) + dec(sqrt(5)))/dec(2) #     Φ = (1 + √5) ÷ 2
+    psi = (dec(1) - dec(sqrt(5)))/dec(2) #     Ψ = (1 - √5) ÷ 2
+
+    return round(c * (phi ** n) - (psi ** n))  #  f(n) = c × Φ^n × Ψ^n
+    
 if __name__ == "__main__":
-    n = 10  # Example input
+    n = 500 
+     # Example input
     repl = 1000  # Number of repetitions
 
     # Apply the timer decorator to each function
