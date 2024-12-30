@@ -1,27 +1,26 @@
-from time import perf_counter as performance
+from time import perf_counter as performace
 from typing import Callable
 
-def func_timer(func: Callable, replics: int = 10) -> Callable:
+def timer(func, repl):
     """
-    Decorator to measure execution time of a function.
+    Decorator to measure the average execution time of a function over multiple runs.
 
-    Args: 
+    Args:
         func: The function to be timed.
-        replics: Number of times the function is executed (default: 10).
+        repl: The number of times to execute the function (default is 1).
 
-    Returns: 
-        A wrapped function that measures and prints the average execution time.
+    Returns:
+        A wrapped function that measures and prints the average execution time in milliseconds.
     """
-    def wrapper(*args, **kwargs):
-        samples = []
-        for _ in range(replics):
-            start_time = performance()
-            result = func(*args, **kwargs)
-            end_time = performance()
-            samples.append(end_time - start_time)
-        average = sum(samples) / replics
-        print(f"Function name: {func.__name__}")
-        print(f"Arguments: args={args}, kwargs={kwargs}")
-        print(f"Average execution time: {average:.6f} seconds")
-        return result
+
+    def wrapper(*args):
+        start_time = performace()
+        for _ in range(repl):
+            func(*args)
+        end_time = performace()
+        average = (end_time - start_time) / repl # performance returns time in seconds 
+        average_microseconds = average * 1e6 # convert to microseconds
+
+        print(f"Average Execution time for {func.__name__}: {average_microseconds:.6f} µs.")
+        return func(*args)
     return wrapper
