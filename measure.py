@@ -1,3 +1,7 @@
+from time import perf_counter as performace
+from typing import Callable, Dict, List
+import statistics
+
 def timer(func, repl, store_samples=False):
     """
     Measure execution time of a function over multiple runs, with optional sample storage.
