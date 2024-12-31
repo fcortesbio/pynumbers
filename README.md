@@ -78,7 +78,7 @@ timed_fibo_decm(n) = 13942322456170021374609800133598112714197599546117005203927
 
 **Key Takeaways**:
 
-- **Memoization**: The `fibo_recs` function performs much better with memoization, significantly reducing redundant calculations, making it an efficient recursive approach. While results for recursion without memoization are not included here because its high computational cost limited the number of samples I could test—my laptop struggled with values of $$ n \geq 50 $$, notably, the memoized version consistently outperformed all other approaches in every experiment.  
+- **Memoization**: The `fibo_recs` function performs much better with memoization, significantly reducing redundant calculations, making it an efficient recursive approach. While results for recursion without memoization are not included here because its high computational cost limited the number of samples I could test—my laptop struggled with values of $ n \geq 50 $, notably, the memoized version consistently outperformed all other approaches in every experiment.  
 
 - **Iterative vs. Mathematical**: The iterative approach (`fibo_iter`) generally outperforms the mathematical calculation (`fibo_math`) for large Fibonacci numbers due to reduced overhead.
 
