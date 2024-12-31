@@ -1,25 +1,33 @@
-from time import perf_counter as performace
-from typing import Callable
-
-def timer(func, repl):
+def timer(func, repl, store_samples=False):
     """
-    Decorator to measure the average execution time of a function over multiple runs.
+    Measure execution time of a function over multiple runs, with optional sample storage.
 
     Args:
-        func: The function to be timed.
-        repl: The number of times to execute the function (default is 1).
+        func: Function to time.
+        repl: Number of repetitions.
+        store_samples (bool): Whether to store individual execution time samples.
 
     Returns:
-        A wrapped function that measures and prints the average execution time in milliseconds.
+        dict: Contains mean, variance, standard deviation, and optionally raw samples.
     """
-
-    def wrapper(*args):
+    samples = []
+    for _ in range(repl):
         start_time = performace()
-        for _ in range(repl):
-            func(*args)
+        func()
         end_time = performace()
-        average = (end_time - start_time) / repl # performance returns time in seconds 
-        average_microseconds = average * 1e6 # convert to microseconds
-        # print(f"Average Execution time for {func.__name__}: {average_microseconds:.6f} µs")
-        return average_microseconds
-    return wrapper
+        samples.append((end_time - start_time) * 1e6)  # Convert to microseconds
+
+    mean = sum(samples) / repl
+    variance = sum((x - mean) ** 2 for x in samples) / repl
+    std_dev = variance ** 0.5
+
+    result = {
+        "mean": mean,
+        "variance": variance,
+        "std_dev": std_dev,
+    }
+
+    if store_samples:
+        result["samples"] = samples
+
+    return result
