@@ -21,6 +21,6 @@ def timer(func, repl):
         average = (end_time - start_time) / repl # performance returns time in seconds 
         average_microseconds = average * 1e6 # convert to microseconds
 
-        print(f"Average Execution time for {func.__name__}: {average_microseconds:.6f} µs.")
+        print(f"Average Execution time for {func.__name__}: {average_microseconds:.6f} µs")
         return func(*args)
     return wrapper

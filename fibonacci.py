@@ -35,6 +35,20 @@ def fibo_math(n: int) -> int:
     if not isinstance(n, int) or n < 0:
         raise ValueError(invalid_input_msg)
     
+    c = 1 / sqrt(5) #                c = 1 ÷ √5
+    phi = (1 + sqrt(5)) / 2 #     Φ = (1 + √5) ÷ 2
+    psi = (1 - sqrt(5)) / 2 #     Ψ = (1 - √5) ÷ 2
+
+    return round(c * (phi ** n) - (psi ** n))  #  f(n) = c × Φ^n × Ψ^n
+
+def fibo_decm(n: int) -> int:
+    """
+    Returns the 'n' number in the Fibonacci sereis using Binnet's formula.
+    Note: Precision issues may arise for very large numbers 
+    """
+    if not isinstance(n, int) or n < 0:
+        raise ValueError(invalid_input_msg)
+    
     getcontext().prec = 50 # Set precision of 50 significant numbers
 
     if n in (0, 1):
@@ -45,20 +59,47 @@ def fibo_math(n: int) -> int:
     psi = (dec(1) - dec(sqrt(5)))/dec(2) #     Ψ = (1 - √5) ÷ 2
 
     return round(c * (phi ** n) - (psi ** n))  #  f(n) = c × Φ^n × Ψ^n
+
+def fibo_matx(n: int) -> int:
+    """
+    Returns the 'n' number in the Fibonacci sereis using Binnet's formula.
+    Note: Precision issues may arise for very large numbers 
+    """
+    if not isinstance(n, int) or n < 0:
+        raise ValueError(invalid_input_msg)
     
+    if n in (0, 1):
+        return n
+
+    def matrix_mul(a, b):
+        return [[a[0][0] * b[0][0] + a[0][1] * b[1][0],
+                 a[0][0] * b[0][1] + a[0][1] * b[1][1]],
+                [a[1][0] * b[0][0] + a[1][1] * b[1][0],
+                 a[1][0] * b[0][1] + a[1][1] * b[1][1]]]
+
+    def matrix_pow(a, n):
+        if n == 1:
+            return a
+        elif n % 2 == 0:
+            return matrix_pow(matrix_mul(a, a), n // 2)
+        else:
+            return matrix_mul(a, matrix_pow(matrix_mul(a, a), (n - 1) // 2))
+
+    result = matrix_pow([[1, 1], [1, 0]], n)
+    return result[0][1]
+
 if __name__ == "__main__":
-    n = 500 
-     # Example input
+    n = 1000  # Example input
     repl = 1000  # Number of repetitions
 
-    # Apply the timer decorator to each function
     timed_fibo_recs = timer(fibo_recs, repl)
     timed_fibo_iter = timer(fibo_iter, repl)
     timed_fibo_math = timer(fibo_math, repl)
+    timed_fibo_decm = timer(fibo_decm, repl)
+    timed_fibo_matx = timer(fibo_matx, repl)
 
-    # Call the timed functions
-    
-    print(timed_fibo_recs(n))
-    print(timed_fibo_iter(n))
-    print(timed_fibo_math(n))
-    
+    print(f"{timed_fibo_recs(n) = }", "\n","-"*55, sep="")
+    print(f"{timed_fibo_iter(n) = }", "\n","-"*55, sep="")
+    print(f"{timed_fibo_math(n) = }", "\n","-"*55, sep="")
+    print(f"{timed_fibo_decm(n) = }", "\n","-"*55, sep="")
+    print(f"{timed_fibo_matx(n) = }", "\n","-"*55, sep="")
