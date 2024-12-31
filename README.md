@@ -12,6 +12,7 @@ This repository contains Python implementations of various number theory algorit
 
 ```plaintext
 .
+├── .gitignore         # to ignore IDLE files and /__pycache__ folder
 ├── fibonacci.py       # Fibonacci calculation methods
 ├── measure.py         # Timer function for benchmarking
 ├── prime-numbers.py   # Prime number algorithms (in progress)
