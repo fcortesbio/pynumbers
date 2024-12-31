@@ -4,17 +4,19 @@ This repository contains a collection of Python implementations for common numbe
 
 ## Fibonacci Numbers
 
-The `fibonacci.py` file provides several functions for calculating Fibonacci numbers:
+The [`fibonacci.py`](./fibonacci.py) file provides several functions for calculating Fibonacci numbers:
 
 * `fibo_recs(n)`: Recursive implementation (optimized with memoization).
 * `fibo_iter(n)`: Iterative implementation.
-* `fibo_math(n)`:  Direct calculation using Binet's formula (with standard `math` module).
-* `fibo_decm(n)`:  Direct calculation using Binet's formula (with `Decimal` for higher precision).
-* `fibo_matx(n)`:  Calculation using matrix exponentiation.
+* `fibo_math(n)`: Direct calculation using Binet's formula (with standard `math` module).
+* `fibo_decm(n)`: Direct calculation using Binet's formula (with `Decimal` for higher precision).
+* `fibo_matx(n)`: Calculation using matrix exponentiation.
+
+Each function has different strengths, with performance measured using the `timer` decorator.
 
 ## Timer Decorator
 
-The `measure.py` file contains the `timer` decorator. This decorator can be used to measure the average execution time of a function over multiple runs.
+The `measure.py` file contains the `timer` decorator, which can be used to measure the average execution time of a function over multiple runs:
 
 ```python
 from measure import timer
@@ -24,14 +26,13 @@ def my_function(...):
     # ...
 ```
 
+The decorator prints the average execution time in microseconds and helps benchmark your functions efficiently.
+
 ## Experiments and Takeaways
 
-I've made several comparisons and adjustments while developing this experiment, varying among diffent approaches, techniques and optimizations to get the $n$ number in the Fibonacci series. I finally opted for keeping a number of them as separate functions and use the @timer to help illustrating the overall performance of each one.
+In my experiments, I compared various Fibonacci calculation techniques, optimizing for both performance and accuracy. Below are some key observations based on 1000 runs with `n = 500`:
 
-Experiments were conducted to compare the performance and accuracy of different Fibonacci implementations. The following output is for 1000 replics and n=500; but I encourage you to try different values as needed to satisfy your curiosity.
-
-``` python fibonacci.py
-
+```plaintext
 Average Execution time for fibo_recs: 0.395896 µs
 timed_fibo_recs(n) = 139423224561697880139724382870407283950070256587697307264108962948325571622863290691557658876222521294125
 -------------------------------------------------------
@@ -50,22 +51,20 @@ timed_fibo_math(n) = 13942322456170022871111646685662830553279311636821475498967
 
 Average Execution time for fibo_decm: 16.170770 µs
 timed_fibo_decm(n) = 139423224561700213746098001335981127141975995461170052039273556102288684192412160681502933644886486015484
-------------------------------------------------------- 
+-------------------------------------------------------
 ```
 
-Here are some key takeaways:
+**Key Takeaways**:
 
-* **Memoization:** The `fibo_recs` function, despite being recursive, performs very well due to memoization, which significantly reduces redundant calculations.
-
-* **Iterative vs. Mathematical:** The iterative approach (`fibo_iter`) is generally more efficient than the direct mathematical calculation using Binet's formula for large Fibonacci numbers.
-* **Precision:**  For extremely large Fibonacci numbers, using the `Decimal` module with higher precision is necessary to maintain accuracy in the mathematical calculations.
-* **Performance vs. Accuracy:** There's often a trade-off between performance and accuracy. Using higher precision with `Decimal` can improve accuracy but also increases execution time.
-* **Number of Operations vs. Cost:** The overall performance depends not only on the number of operations but also on the cost of each operation. A few expensive operations (like multiplications/divisions with large numbers) can be slower than many cheaper operations (like additions).
-* **Floating-Point Limitations:**  Calculations involving floating-point numbers can have inherent precision issues, especially with division and very large or very small numbers.
+* **Memoization**: The `fibo_recs` function is significantly optimized through memoization, reducing redundant calculations and performing very well despite being recursive.
+* **Iterative vs. Mathematical**: The iterative approach (`fibo_iter`) outperforms the mathematical calculation for large Fibonacci numbers, while the mathematical approach (`fibo_math`) is generally slower due to the overhead of floating-point operations.
+* **Precision**: For very large Fibonacci numbers, the `Decimal` module with higher precision ensures more accurate results but at the cost of increased execution time.
+* **Performance vs. Accuracy**: There's a balance between performance and accuracy. While `Decimal` improves accuracy, it increases the time complexity.
+* **Floating-Point Limitations**: Binet's formula and floating-point calculations can lead to precision issues for very large Fibonacci numbers.
 
 ## Future Plans
 
-This repository will be expanded to include modules for other number theory problems, such as:
+In the future, this repository will expand to cover other number theory problems, such as:
 
 * Prime number generation and primality testing
 * Factorial calculations
@@ -75,8 +74,9 @@ This repository will be expanded to include modules for other number theory prob
 ## How to Use
 
 1. Clone the repository.
-2. Run the `fibonacci.py` file to see the Fibonacci implementations and their performance comparisons.
-3. Use the `timer` decorator from `measure.py` to measure the execution time of your own functions.
+2. Ensure Python is installed, and set up a virtual environment if necessary.
+3. Run the `fibonacci.py` file to see the Fibonacci implementations and performance benchmarks.
+4. Use the `timer` decorator from `measure.py` to measure the execution time of your own functions.
 
 ## Contributing
 
