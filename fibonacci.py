@@ -1,10 +1,8 @@
-import sys
+import sys # required for manipulating system variable
 from measure import timer  # Decorator for measuring execution times
-from math import sqrt
-from functools import lru_cache  # Least Recently Used cache for improved performance in recursive Fibonacci
+from math import sqrt # square root
+from functools import lru_cache  # Least Recently Used cache ~ for improving performance in recursive functions
 from decimal import Decimal as dec, getcontext
-import matplotlib.pyplot as plt #! pip instal matplotlib
-import json # to store results in a json file
 
 sys.setrecursionlimit(1500) # Increase recursion limit 
 
@@ -155,59 +153,43 @@ def fibo_matx(n: int) -> int:
     return result[0][1]
 
 if __name__ == "__main__":
-    # initial experimients: 
-    # n = 500  # Example input
-    # repl = 1000  # Number of repetitions
+    import matplotlib.pyplot as plt #! pip instal matplotlib
+    import json # to store results in a json file
 
-    # timed_fibo_recs = timer(fibo_recs, repl)
-    # timed_fibo_iter = timer(fibo_iter, repl)
-    # timed_fibo_math = timer(fibo_math, repl)
-    # timed_fibo_decm = timer(fibo_decm, repl)
-    # timed_fibo_matx = timer(fibo_matx, repl)
-    
-    # print(f"{timed_fibo_recs(n) = }", "\n","-"*55, sep="")
-    # print(f"{timed_fibo_iter(n) = }", "\n","-"*55, sep="")
-    # print(f"{timed_fibo_matx(n) = }", "\n","-"*55, sep="")
-    # print(f"{timed_fibo_math(n) = }", "\n","-"*55, sep="")
-    # print(f"{timed_fibo_decm(n) = }", "\n","-"*55, sep="")
-
-    # 
     results = {
         "fibo_recs": [],
         "fibo_iter": [],
         "fibo_math": [],
         "fibo_decm": [],
         "fibo_matx": [],
-        }
+    }
     repl = 40  # Number of repetitions
-    n_values = range(10, 250)  # i values from 10 to 19
+    n_values = range(10, 250)  # Range of Fibonacci input values
 
     for n in n_values:
-        # Apply the timer decorator to each function
-        timed_fibo_recs = timer(fibo_recs, repl)
-        timed_fibo_iter = timer(fibo_iter, repl)
-        timed_fibo_math = timer(fibo_math, repl)
-        timed_fibo_decm = timer(fibo_decm, repl)
-        timed_fibo_matx = timer(fibo_matx, repl)
+        timed_fibo_recs = timer(lambda: fibo_recs(n), repl)
+        timed_fibo_iter = timer(lambda: fibo_iter(n), repl)
+        timed_fibo_math = timer(lambda: fibo_math(n), repl)
+        timed_fibo_decm = timer(lambda: fibo_decm(n), repl)
+        timed_fibo_matx = timer(lambda: fibo_matx(n), repl)
 
-        # Call the timed functions and store results
-        results["fibo_recs"].append(timed_fibo_recs(n))
-        results["fibo_iter"].append(timed_fibo_iter(n))
-        results["fibo_math"].append(timed_fibo_math(n))
-        results["fibo_decm"].append(timed_fibo_decm(n))
-        results["fibo_matx"].append(timed_fibo_matx(n))
+        # Append mean execution times to results
+        results["fibo_recs"].append(timed_fibo_recs["mean_time"])
+        results["fibo_iter"].append(timed_fibo_iter["mean_time"])
+        results["fibo_math"].append(timed_fibo_math["mean_time"])
+        results["fibo_decm"].append(timed_fibo_decm["mean_time"])
+        results["fibo_matx"].append(timed_fibo_matx["mean_time"])
 
-    print(results)
-
-    # Store results in a JSON file
+    # Save results to a JSON file
     with open("fibonacci_results.json", "w") as f:
-        json.dump(results, f, indent=4)  # Use indent for pretty formatting
+        json.dump(results, f, indent=4)
 
-    # Data visualization
-    plt.figure(figsize=(10, 6))  # Adjust figure size as needed
-
+    # Data Visualization
+    plt.figure(figsize=(12, 8))
     for func_name, times in results.items():
-        plt.plot(n_values, times, label=func_name)
+        valid_times = [t for t in times if t is not None]
+        valid_n = [n for n, t in zip(n_values, times) if t is not None]
+        plt.plot(valid_n, valid_times, label=func_name)
 
     plt.xlabel("n (Input Value)")
     plt.ylabel("Average Execution Time (µs)")
