@@ -1,5 +1,5 @@
 import sys # required for manipulating system variable
-from measure import timer  # Decorator for measuring execution times
+from timer import timer  # Decorator for measuring execution times
 from math import sqrt # square root
 from functools import lru_cache  # Least Recently Used cache ~ for improving performance in recursive functions
 from decimal import Decimal as dec, getcontext
