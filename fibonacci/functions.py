@@ -2,56 +2,10 @@ import sys  # Required for manipulating system variables
 from math import sqrt  # Square root for Binet's formula
 from decimal import Decimal as dec, getcontext  # For decimal management in Binet's formula with increased precision
 from functools import wraps, lru_cache
+from shorcuts import validate_index, memoize # importing from ../shortcuts.py
 
 # Increase recursion limit
 sys.setrecursionlimit(1500)
-
-# Decorator for input validation
-def validate_index(func):
-    """Validates that the first argument to a function is a non-negative integer.
-
-    This decorator checks if the first positional argument (`n`) passed to the 
-    decorated function is a non-negative integer. If not, it raises a ValueError.
-
-    Args:
-        func (Callable): The function to be decorated.
-
-    Raises:
-        ValueError: If the first argument to the function is not a non-negative integer.
-
-    Returns:
-        Callable: The decorated function.
-    """
-    invalid_input_msg = "Input must be a non-negative integer."
-    @wraps(func)
-    def wrapper(n):
-        if not isinstance(n, int) or n < 0:
-            raise ValueError(invalid_input_msg)
-        return func(n)
-    return wrapper
-
-def memoize(func):
-    """Memoizes a function.
-
-    This decorator caches the results of a function based on its arguments. 
-    If the function is called again with the same arguments, the cached result 
-    is returned instead of recomputing.
-
-    Args:
-        func (Callable): The function to be memoized.
-
-    Returns:
-        Callable: The memoized function.
-    """
-    cache = {}
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        key = str(args) + str(kwargs)
-        if key not in cache:
-            cache[key] = func(*args, **kwargs)
-        return cache[key]
-    return wrapper     
-
 
 # Fibonacci computation methods
 @validate_index
@@ -82,7 +36,7 @@ def memoized_recursion(n: int) -> int:
         int: The n-th Fibonacci number.
     """
     return pure_recursion(n)
-    
+
 @lru_cache(maxsize=None)
 def memoized_lru_cache_recursion(n: int) -> int:
     """Calculate the n-th Fibonacci number using recursion with lru_cache.
@@ -177,3 +131,6 @@ def matrix_exponentiation(n: int) -> int:
 
     result = matrix_pow([[1, 1], [1, 0]], n)
     return result[0][1]
+
+if __name__ == "__main__":
+    print(pure_recursion(10))
