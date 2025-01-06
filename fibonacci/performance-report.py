@@ -4,7 +4,7 @@ import os
 # Add the parent directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from fibonacci import fibo_recs, fibo_lruc, fibo_iter, fibo_math, fibo_decm, fibo_matx
+from debug.fibonacci.fibonacci import fibo_recs, fibo_lruc, fibo_iter, fibo_math, fibo_decm, fibo_matx
 from timer import timer
 
 import matplotlib.pyplot as plt  # Visualization library
@@ -19,12 +19,12 @@ results = {
     "fibo_matx": [],
 }
 
-repl = 30  # Number of repetitions per test
-n_values = range(2, 250)  # Fibonacci input values to test
+repl = 10  # Number of repetitions per test
+n_values = range(2, 150)  # Fibonacci input values to test
 
 for n in n_values:
     try:
-        if n <= 11: # max value for pure recursion
+        if n <= 10: # max value for pure recursion
             timed_fibo_recs = timer(lambda: fibo_recs(n), repl)
             results["fibo_recs"].append(timed_fibo_recs["mean_time"])
         else: 

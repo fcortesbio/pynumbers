@@ -1,7 +1,6 @@
 import sys  # Required for manipulating system variables
-# from timer import timer  # execution times benchmarking
 from math import sqrt  # Square root
-from functools import lru_cache  # Memoization for improving recursive performance
+from functools import lru_cache, wraps  # Memoization and function wrapping
 from decimal import Decimal as dec, getcontext
 
 # Increase recursion limit
@@ -10,52 +9,55 @@ sys.setrecursionlimit(1500)
 # Global variable for input validation
 invalid_input_msg = "Input must be a non-negative integer"
 
+# Decorator for input validation
+def validate_input(func):
+    @wraps(func)
+    def wrapper(n, *args, **kwargs):
+        if not isinstance(n, int) or n < 0:
+            raise ValueError(invalid_input_msg)
+        return func(n, *args, **kwargs)
+    return wrapper
+
 # Fibonacci computation methods
+@validate_input
 def fibo_recs(n: int) -> int:
     """Calculate the n-th Fibonacci number using pure recursion."""
-    if not isinstance(n, int) or n < 0:
-        raise ValueError(invalid_input_msg)
     return n if n in (0, 1) else fibo_recs(n - 1) + fibo_recs(n - 2)
 
+@validate_input
 @lru_cache(maxsize=None)
 def fibo_lruc(n: int) -> int:
     """Calculate the n-th Fibonacci number using recursion with memoization."""
-    if not isinstance(n, int) or n < 0:
-        raise ValueError(invalid_input_msg)
     return n if n in (0, 1) else fibo_lruc(n - 1) + fibo_lruc(n - 2)
 
+@validate_input
 def fibo_iter(n: int) -> int:
     """Calculate the n-th Fibonacci number using an iterative approach."""
-    if not isinstance(n, int) or n < 0:
-        raise ValueError(invalid_input_msg)
     a, b = 0, 1
     for _ in range(n):
         a, b = b, a + b
     return a
 
+@validate_input
 def fibo_math(n: int) -> int:
     """Calculate the n-th Fibonacci number using Binet's formula."""
-    if not isinstance(n, int) or n < 0:
-        raise ValueError(invalid_input_msg)
     c = 1 / sqrt(5)
     phi = (1 + sqrt(5)) / 2
     psi = (1 - sqrt(5)) / 2
     return round(c * (phi ** n) - (psi ** n))
 
+@validate_input
 def fibo_decm(n: int) -> int:
     """Calculate the n-th Fibonacci number using Binet's formula with higher precision."""
-    if not isinstance(n, int) or n < 0:
-        raise ValueError(invalid_input_msg)
     getcontext().prec = 150
     c = dec(1) / dec(sqrt(5))
     phi = (dec(1) + dec(sqrt(5))) / dec(2)
     psi = (dec(1) - dec(sqrt(5))) / dec(2)
     return round(c * (phi ** n) - (psi ** n))
 
+@validate_input
 def fibo_matx(n: int) -> int:
     """Calculate the n-th Fibonacci number using matrix exponentiation."""
-    if not isinstance(n, int) or n < 0:
-        raise ValueError(invalid_input_msg)
     if n in (0, 1):
         return n
 
