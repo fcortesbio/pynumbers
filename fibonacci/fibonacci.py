@@ -1,8 +1,7 @@
 import sys  # Required for manipulating system variables
-from math import sqrt  # Square root for Binnet's formula
-from decimal import Decimal as dec, getcontext # for decimal manage in Binnet's formula with increased precision 
-from functools import wraps
-from functools import lru_cache  # Memoization using lru_cache from functools
+from math import sqrt  # Square root for Binet's formula
+from decimal import Decimal as dec, getcontext  # For decimal management in Binet's formula with increased precision
+from functools import wraps, lru_cache
 
 # Increase recursion limit
 sys.setrecursionlimit(1500)
@@ -23,47 +22,92 @@ def validate_index(func):
     Returns:
         Callable: The decorated function.
     """
-    invalid_input_msg = "Input must be a non-negative integer"
+    invalid_input_msg = "Input must be a non-negative integer."
     @wraps(func)
-    def wrapper(n):  # Only 'n' is needed
+    def wrapper(n):
         if not isinstance(n, int) or n < 0:
             raise ValueError(invalid_input_msg)
         return func(n)
     return wrapper
 
 def memoize(func):
+    """Memoizes a function.
+
+    This decorator caches the results of a function based on its arguments. 
+    If the function is called again with the same arguments, the cached result 
+    is returned instead of recomputing.
+
+    Args:
+        func (Callable): The function to be memoized.
+
+    Returns:
+        Callable: The memoized function.
+    """
     cache = {}
-    
     @wraps(func)
     def wrapper(*args, **kwargs):
-      key = str(args) + str(kwargs)
-      
-      if key not in cache:
-          cache[key] = func(*args, **kwargs)
-      
-      return cache[key]
-    
+        key = str(args) + str(kwargs)
+        if key not in cache:
+            cache[key] = func(*args, **kwargs)
+        return cache[key]
     return wrapper     
 
 
 # Fibonacci computation methods
 @validate_index
 def pure_recursion(n: int) -> int:
-    return n if n in (0, 1) else pure_recursion(n - 1) + pure_recursion(n - 2)
-        
+    """Calculate the n-th Fibonacci number using pure recursion.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
+    if n <= 1:  # Base case for recursion
+        return n
+    return pure_recursion(n - 1) + pure_recursion(n - 2)
+
 @memoize
 def memoized_recursion(n: int) -> int: 
-    """"""
+    """Calculate the n-th Fibonacci number using memoized recursion.
+
+    This function uses the `memoize` decorator to cache results and avoid 
+    redundant computations.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
     return pure_recursion(n)
     
-@lru_cache
-def memoized_lruc_recursion(n: int) -> int:
-    """"""
+@lru_cache(maxsize=None)
+def memoized_lru_cache_recursion(n: int) -> int:
+    """Calculate the n-th Fibonacci number using recursion with lru_cache.
+
+    This function uses the `lru_cache` decorator from `functools` for 
+    memoization.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
     return pure_recursion(n)
 
 @validate_index
 def iteration(n: int) -> int:
-    """Calculate the n-th Fibonacci number using an iterative approach."""
+    """Calculate the n-th Fibonacci number using an iterative approach.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
     a, b = 0, 1
     for _ in range(n):
         a, b = b, a + b
@@ -71,25 +115,48 @@ def iteration(n: int) -> int:
 
 @validate_index
 def binets_formula(n: int) -> int:
-    """Calculate the n-th Fibonacci number using Binet's formula."""
+    """Calculate the n-th Fibonacci number using Binet's formula.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
     c = 1 / sqrt(5)
     phi = (1 + sqrt(5)) / 2
     psi = (1 - sqrt(5)) / 2
-    return round(c * (phi ** n) - (psi ** n))
+    return int(round(c * (phi ** n - psi ** n)))  # Ensure integer output
 
 @validate_index
 def binets_formula_decimals(n: int) -> int:
-    """Calculate the n-th Fibonacci number using Binet's formula with higher precision."""
-    getcontext().prec = 150
-    c = dec(1) / dec(sqrt(5))
-    phi = (dec(1) + dec(sqrt(5))) / dec(2)
-    psi = (dec(1) - dec(sqrt(5))) / dec(2)
-    return round(c * (phi ** n) - (psi ** n))
+    """Calculate the n-th Fibonacci number using Binet's formula with higher precision.
+
+    This function uses the `decimal` module to improve accuracy for large values of `n`.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
+    getcontext().prec = 150  # Set decimal precision
+    sqrt5 = dec(sqrt(5))
+    phi = (dec(1) + sqrt5) / dec(2)
+    psi = (dec(1) - sqrt5) / dec(2)
+    return int(round((phi ** n - psi ** n) / sqrt5))  # Ensure integer output
 
 @validate_index
 def matrix_exponentiation(n: int) -> int:
-    """Calculate the n-th Fibonacci number using matrix exponentiation."""
-    if n in (0, 1):
+    """Calculate the n-th Fibonacci number using matrix exponentiation.
+
+    Args:
+        n (int): The index of the desired Fibonacci number (non-negative).
+
+    Returns:
+        int: The n-th Fibonacci number.
+    """
+    if n <= 1:
         return n
 
     def matrix_mul(a, b):
