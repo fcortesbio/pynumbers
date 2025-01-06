@@ -31,29 +31,38 @@ def validate_index(func):
         return func(n)
     return wrapper
 
-# def memoize(func):
-#     cache = {}
+def memoize(func):
+    cache = {}
     
-#     @wraps(func)
-#     def wrapper(*args, **kwargs):
-#       in progress
-
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+      key = str(args) + str(kwargs)
+      
+      if key not in cache:
+          cache[key] = func(*args, **kwargs)
+      
+      return cache[key]
+    
+    return wrapper     
 
 
 # Fibonacci computation methods
 @validate_index
 def pure_recursion(n: int) -> int:
-    """Calculate the n-th Fibonacci number using pure recursion."""
     return n if n in (0, 1) else pure_recursion(n - 1) + pure_recursion(n - 2)
+        
+@memoize
+def memoized_recursion(n: int) -> int: 
+    """"""
+    return pure_recursion(n)
+    
+@lru_cache
+def memoized_lruc_recursion(n: int) -> int:
+    """"""
+    return pure_recursion(n)
 
 @validate_index
-@lru_cache(maxsize=None)
-def fibo_lruc(n: int) -> int:
-    """Calculate the n-th Fibonacci number using recursion with memoization."""
-    return n if n in (0, 1) else fibo_lruc(n - 1) + fibo_lruc(n - 2)
-
-@validate_index
-def fibo_iter(n: int) -> int:
+def iteration(n: int) -> int:
     """Calculate the n-th Fibonacci number using an iterative approach."""
     a, b = 0, 1
     for _ in range(n):
@@ -61,7 +70,7 @@ def fibo_iter(n: int) -> int:
     return a
 
 @validate_index
-def fibo_math(n: int) -> int:
+def binets_formula(n: int) -> int:
     """Calculate the n-th Fibonacci number using Binet's formula."""
     c = 1 / sqrt(5)
     phi = (1 + sqrt(5)) / 2
@@ -69,7 +78,7 @@ def fibo_math(n: int) -> int:
     return round(c * (phi ** n) - (psi ** n))
 
 @validate_index
-def fibo_decm(n: int) -> int:
+def binets_formula_decimals(n: int) -> int:
     """Calculate the n-th Fibonacci number using Binet's formula with higher precision."""
     getcontext().prec = 150
     c = dec(1) / dec(sqrt(5))
@@ -78,7 +87,7 @@ def fibo_decm(n: int) -> int:
     return round(c * (phi ** n) - (psi ** n))
 
 @validate_index
-def fibo_matx(n: int) -> int:
+def matrix_exponentiation(n: int) -> int:
     """Calculate the n-th Fibonacci number using matrix exponentiation."""
     if n in (0, 1):
         return n
