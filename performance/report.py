@@ -2,10 +2,10 @@ import sys
 import os
 
 # Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
-from debug.fibonacci.fibonacci import fibo_recs, fibo_lruc, fibo_iter, fibo_math, fibo_decm, fibo_matx
-from timer import timer
+from fibonacci import fibo_recs, fibo_lruc, fibo_iter, fibo_math, fibo_decm, fibo_matx
+from .timer import timer
 
 import matplotlib.pyplot as plt  # Visualization library
 import json  # To save results in a file
@@ -52,7 +52,7 @@ for n in n_values:
 
 
 # Save results to a JSON file
-with open("av_et_rawdata.json", "w") as f:
+with open("av_et_rawdata2.json", "w") as f:
     json.dump(results, f, indent=4)
 
 # Data Visualization
