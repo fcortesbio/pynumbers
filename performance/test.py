@@ -25,7 +25,6 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
         for n in range(start, end, steps):
             try:
                 timed_func = timer(lambda: func(n), repetitions)
-                # print(f'Function {func.__name__}, n={n}, mean_time={timed_func["mean_time"]}')  # Log time
                 if timed_func['mean_time'] > ex_time_limit:  
                     print(f'Skipping {func.__name__} for n={n} as it exceeds the time limit of {ex_time_limit} ms.')
                     break  # Skip subsequent values of `n`
@@ -68,16 +67,16 @@ if __name__ == '__main__':
             print(f'- {func.__name__}')
         results = run_performance_test(functions, repetitions, start, end, steps, ms_limit)
         
-        # add user prompt as a comment 
+        # Add user prompt and parameters to the output data
         output_data = {
-            "parameters":{
-                "source": {args.source}, 
-                "output": f"{output_path}/{args.output}", 
-                "repetitions": {args.repetitions}, 
-                "start" : {args.start},
-                "end" : {args.end}, 
-                "steps" : {args.steps},
-                "ms_lim" : {args.ms_lim}                
+            "parameters": {
+                "source": args.source,
+                "output": args.output,
+                "repetitions": args.repetitions,
+                "start": args.start,
+                "end": args.end,
+                "steps": args.steps,
+                "ms_limit": args.ms_limit
             },
             "results": results
         }
