@@ -25,7 +25,8 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
         for n in range(start, end, steps):
             try:
                 timed_func = timer(lambda: func(n), repetitions)
-                if timed_func['mean_time'] > ex_time_limit * 1000:  # Convert ms to microseconds
+                # print(f'Function {func.__name__}, n={n}, mean_time={timed_func["mean_time"]}')  # Log time
+                if timed_func['mean_time'] > ex_time_limit:  
                     print(f'Skipping {func.__name__} for n={n} as it exceeds the time limit of {ex_time_limit} ms.')
                     break  # Skip subsequent values of `n`
                 results[func.__name__].append({
@@ -44,13 +45,13 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run performance tests on module functions.')
-    parser.add_argument('--source', '-s', required=True, help='Path to the module directory')
+    parser.add_argument('--source', '-S', required=True, help='Path to the module directory')
     parser.add_argument('--repetitions', '-r', type=int, default=10, help='Number of repetitions for each test')
     parser.add_argument('--output', '-o', default=f'perf_test_{time_now()}.json', help='Output file for results')
-    parser.add_argument('--start', type=int, default=0, help='Initial n value for iteration')
-    parser.add_argument('--end', type=int, default=10, help='Last n value for iteration')
-    parser.add_argument('--steps', type=int, default=1, help='Steps for iteration')
-    parser.add_argument('--ms_lim', "-l", type=int, default=200, help='Execution time limit in ms')
+    parser.add_argument('--start', '-st', type=int, default=0, help='Initial n value for iteration')
+    parser.add_argument('--end', '-e', type=int, default=10, help='Last n value for iteration')
+    parser.add_argument('--steps', '-stp', type=int, default=1, help='Steps for iteration')
+    parser.add_argument('--ms_limit', '-l', type=int, default=200, help='Execution time limit in ms')
     args = parser.parse_args()
 
     # Ensure the reports folder exists
@@ -59,7 +60,7 @@ if __name__ == '__main__':
     output_path = os.path.join(reports_folder, args.output)
 
     functions = get_functions_from_module(args.source)
-    repetitions, start, end, steps, ex_time_limit = args.repetitions, args.start, args.end, args.steps, args.ex_time_limit
+    repetitions, start, end, steps, ex_time_limit = args.repetitions, args.start, args.end, args.steps, args.ms_limit
 
     if functions:
         print('Functions found:')
