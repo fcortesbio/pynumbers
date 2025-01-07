@@ -6,7 +6,8 @@ import json
 from typing import Callable
 from shorcuts import get_formatted_time as time_now
 from performance.timer import timer
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def get_functions_from_module(module_path):
     try:
@@ -27,7 +28,7 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
                 timed_func = timer(lambda: func(n), repetitions)
                 if timed_func['mean_time'] > ex_time_limit:  
                     print(f'Skipping {func.__name__} for n={n} as it exceeds the time limit of {ex_time_limit} ms.')
-                    break  # Skip subsequent values of `n`
+                    break
                 results[func.__name__].append({
                     'n': n,
                     'mean_time': timed_func['mean_time'],
@@ -41,6 +42,20 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
                 })
     return results
 
+def plot_performance(results):
+    sns.set(style='whitegrid')
+    for func_name, data in results.items():
+        if not data or 'error' in data[0]:
+            continue
+        n_values = [item['n'] for item in data]
+        mean_times = [item['mean_time'] for item in data]
+        plt.plot(n_values, mean_times, label=func_name)
+
+    plt.xlabel('n')
+    plt.ylabel('Mean Execution Time (ms)')
+    plt.title('Function Performance')
+    plt.legend()
+    plt.show()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run performance tests on module functions.')
@@ -53,7 +68,6 @@ if __name__ == '__main__':
     parser.add_argument('--ms_limit', '-l', type=int, default=200, help='Execution time limit in ms')
     args = parser.parse_args()
 
-    # Ensure the reports folder exists
     reports_folder = 'reports'
     os.makedirs(reports_folder, exist_ok=True)
     output_path = os.path.join(reports_folder, args.output)
@@ -67,7 +81,6 @@ if __name__ == '__main__':
             print(f'- {func.__name__}')
         results = run_performance_test(functions, repetitions, start, end, steps, ms_limit)
         
-        # Add user prompt and parameters to the output data
         output_data = {
             'parameters': {
                 'source': args.source,
@@ -85,11 +98,8 @@ if __name__ == '__main__':
             json.dump(output_data, outfile, indent=4)
         print(f'Performance data saved to: {output_path}')
         
-        plot = input(f"Generate plot for {args.source}?")
+        plot = input(f"Generate plot for {args.source}? (y/n): ").lower()
         if plot in ("y", "yes"):
-            pass
-        else: 
-            pass
-        
+            plot_performance(results)
     else:
         print('No functions to test')
