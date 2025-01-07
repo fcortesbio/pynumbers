@@ -43,8 +43,12 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
                 })
     return results
 
-def plot_performance(results, output_file):
+def plot_performance(results, output_file, size=(12, 20)):
     sns.set(style='whitegrid')
+    
+    # Set figure size
+    plt.figure(figsize=size)
+    
     for func_name, data in results.items():
         if not data or 'error' in data[0]:
             continue
