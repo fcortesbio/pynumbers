@@ -43,7 +43,7 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
                 })
     return results
 
-def plot_performance(results, output_file, size=(12, 20)):
+def plot_performance(results, output_file, size=(12, 12)):
     sns.set(style='whitegrid')
     
     # Set figure size
