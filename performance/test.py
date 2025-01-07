@@ -6,8 +6,9 @@ import json
 from typing import Callable
 from shorcuts import get_formatted_time as time_now
 from performance.timer import timer
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
 def get_functions_from_module(module_path):
     try:
@@ -42,7 +43,7 @@ def run_performance_test(functions: Callable, repetitions: int, start: int, end:
                 })
     return results
 
-def plot_performance(results):
+def plot_performance(results, output_file):
     sns.set(style='whitegrid')
     for func_name, data in results.items():
         if not data or 'error' in data[0]:
@@ -55,7 +56,11 @@ def plot_performance(results):
     plt.ylabel('Mean Execution Time (ms)')
     plt.title('Function Performance')
     plt.legend()
-    plt.show()
+    
+    # Save the plot as a PNG file
+    plt.savefig(output_file)
+    plt.close()  # Close the plot to prevent displaying in the notebook (if running interactively)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run performance tests on module functions.')
@@ -100,6 +105,10 @@ if __name__ == '__main__':
         
         plot = input(f"Generate plot for {args.source}? (y/n): ").lower()
         if plot in ("y", "yes"):
-            plot_performance(results)
+            # Create the plot file path based on args.output and save it with a .png extension
+            plot_file = os.path.join(reports_folder, f'{args.output}.png')
+            plot_performance(results, plot_file)
+            print(f'Plot saved to: {plot_file}')
+        
     else:
         print('No functions to test')
