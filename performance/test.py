@@ -69,20 +69,27 @@ if __name__ == '__main__':
         
         # Add user prompt and parameters to the output data
         output_data = {
-            "parameters": {
-                "source": args.source,
-                "output": args.output,
-                "repetitions": args.repetitions,
-                "start": args.start,
-                "end": args.end,
-                "steps": args.steps,
-                "ms_limit": args.ms_limit
+            'parameters': {
+                'source': args.source,
+                'output': args.output,
+                'repetitions': args.repetitions,
+                'start': args.start,
+                'end': args.end,
+                'steps': args.steps,
+                'ms_limit': args.ms_limit
             },
-            "results": results
+            'results': results
         }
         
         with open(output_path, 'w') as outfile:
             json.dump(output_data, outfile, indent=4)
         print(f'Performance data saved to: {output_path}')
+        
+        plot = input(f"Generate plot for {args.source}?")
+        if plot in ("y", "yes"):
+            pass
+        else: 
+            pass
+        
     else:
         print('No functions to test')
