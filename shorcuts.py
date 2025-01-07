@@ -1,4 +1,5 @@
 from functools import wraps
+import datetime
 
 # Decorator for input validation
 def validate_index(func):
@@ -45,3 +46,15 @@ def memoize(func):
             cache[key] = func(*args, **kwargs)
         return cache[key]
     return wrapper     
+
+def get_formatted_time():
+  """
+  Returns the current time in the format MMDDYY_HH.MM.
+  """
+  now = datetime.datetime.now()
+  return now.strftime("%m%d%y_%H.%M")
+
+# Get the formatted time string
+formatted_time = get_formatted_time()
+print(formatted_time)
+
