@@ -60,15 +60,30 @@ if __name__ == '__main__':
     output_path = os.path.join(reports_folder, args.output)
 
     functions = get_functions_from_module(args.source)
-    repetitions, start, end, steps, ex_time_limit = args.repetitions, args.start, args.end, args.steps, args.ms_limit
+    repetitions, start, end, steps, ms_limit = args.repetitions, args.start, args.end, args.steps, args.ms_limit
 
     if functions:
         print('Functions found:')
         for func in functions:
             print(f'- {func.__name__}')
-        results = run_performance_test(functions, repetitions, start, end, steps, ex_time_limit)
+        results = run_performance_test(functions, repetitions, start, end, steps, ms_limit)
+        
+        # add user prompt as a comment 
+        output_data = {
+            "parameters":{
+                "source": {args.source}, 
+                "output": f"{output_path}/{args.output}", 
+                "repetitions": {args.repetitions}, 
+                "start" : {args.start},
+                "end" : {args.end}, 
+                "steps" : {args.steps},
+                "ms_lim" : {args.ms_lim}                
+            },
+            "results": results
+        }
+        
         with open(output_path, 'w') as outfile:
-            json.dump(results, outfile, indent=4)
+            json.dump(output_data, outfile, indent=4)
         print(f'Performance data saved to: {output_path}')
     else:
         print('No functions to test')
